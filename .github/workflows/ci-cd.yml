@@ -27,9 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
           
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      
 
       #Sets up node
       - name: Setup Node.js environment
@@ -55,7 +53,9 @@ jobs:
         with:
           # Upload entire repository
           path: './dist'
-        
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
     
 

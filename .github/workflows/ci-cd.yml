@@ -1,0 +1,64 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  test-build-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      #Fetches code in the repository
+      - name: Checkout 
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: './dist'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      #Sets up node
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.3
+
+      #Installs all dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      #Runs all unit tests
+      - name: Run unit tests
+        run: npm run test
+
+      #Bundle deployable application
+      - name: Bundle
+        run: npm run build
+
+        
+
+    
+
+  
+
+
+
+            
